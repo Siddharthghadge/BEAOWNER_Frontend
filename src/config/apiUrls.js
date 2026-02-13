@@ -1,0 +1,14 @@
+export const API_URLS = {
+  AUTH: import.meta.env.VITE_AUTH_SERVICE_URL,
+  CAR: import.meta.env.VITE_CAR_SERVICE_URL,
+  BOOKING: import.meta.env.VITE_BOOKING_SERVICE_URL,
+  USER: import.meta.env.VITE_USER_SERVICE_URL,
+  PAYMENT: import.meta.env.VITE_PAYMENT_SERVICE_URL,
+  BIKE: import.meta.env.VITE_BIKE_SERVICE_URL,
+  NOTIFICATION: import.meta.env.VITE_NOTIFICATION_SERVICE_URL,
+
+  CAR_UPLOADS: import.meta.env.VITE_CAR_UPLOADS_URL,
+  BIKE_UPLOADS: import.meta.env.VITE_BIKE_UPLOADS_URL,
+   RENTALS: import.meta.env.VITE_RENTAL_MARKETPLACE_SERVICE_URL,
+  
+};
