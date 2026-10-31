@@ -58,6 +58,7 @@ import EditBike from "./pages/owner/EditBike";
 import OwnerBookings from "./pages/owner/OwnerBookings";
 import OwnerWallet from "./components/owner/OwnerWallet";
 import EditRentalItem from "./pages/owner/EditRentalItem.jsx";
+import StaticPage from "@/pages/user/StaticPage";
 
 // --- ✅ UPDATED: Generic Rental Components (User Side) ---
 import Rentals from "./pages/rentals/Rentals"; // Renamed from RentalElectronics
@@ -119,6 +120,16 @@ export default function App() {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/want-to-earn" element={<WantToEarn />} />
+
+            {/* ✅ FOOTER INFO PAGES (public) */}
+            <Route path="/about" element={<StaticPage pageKey="about" />} />
+            <Route path="/partner" element={<StaticPage pageKey="partner" />} />
+            <Route path="/rfp" element={<StaticPage pageKey="rfp" />} />
+            <Route path="/contact" element={<StaticPage pageKey="contact" />} />
+            <Route path="/complaint" element={<StaticPage pageKey="complaint" />} />
+            <Route path="/terms" element={<StaticPage pageKey="terms" />} />
+            <Route path="/privacy" element={<StaticPage pageKey="privacy" />} />
+            <Route path="/faq" element={<StaticPage pageKey="faq" />} />
           </Route>
 
           {/* ✅ DYNAMIC RENTALS (User Side) */}

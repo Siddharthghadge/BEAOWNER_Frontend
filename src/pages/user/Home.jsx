@@ -1,5 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 /**
  * Home Component
@@ -24,12 +25,25 @@ const Home = () => {
     }
   };
 
+  // Shown when someone hovers/clicks a service that is not live yet
+  const showComingSoon = (title) => {
+    toast.info(`${title} service is coming soon!`);
+  };
+
+  // ✅ ORDER: Properties → Furniture → Home Appliances → Electronics → the rest
+  // ✅ Vehicles is marked comingSoon (no navigation, shows "Coming soon")
   const services = [
     {
-      title: "Vehicles",
-      subtitle: "Cars, Bikes & Scooters",
-      img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800",
-      path: "/cars-home",
+      title: "Properties",
+      subtitle: "Flats, Rooms & Offices",
+      img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
+      path: "/rentals?category=Properties",
+    },
+    {
+      title: "Furniture",
+      subtitle: "Home & Office Decor",
+      img: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800",
+      path: "/rentals?category=Furniture",
     },
     {
       title: "Home Appliances",
@@ -44,10 +58,11 @@ const Home = () => {
       path: "/rentals?category=Electronics",
     },
     {
-      title: "Furniture",
-      subtitle: "Home & Office Decor",
-      img: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800",
-      path: "/rentals?category=Furniture",
+      title: "Vehicles",
+      subtitle: "Cars, Bikes & Scooters",
+      img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800",
+      path: "/cars-home",
+      comingSoon: true,
     },
     {
       title: "Medical Equipment",
@@ -72,12 +87,6 @@ const Home = () => {
       subtitle: "Cricket, Football & More",
       img: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=800",
       path: "/rentals?category=Sports",
-    },
-    {
-      title: "Properties",
-      subtitle: "Flats, Rooms & Offices",
-      img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
-      path: "/rentals?category=Properties",
     },
     {
       title: "Gym Equipments",
@@ -117,73 +126,184 @@ const Home = () => {
     },
   ];
 
+  // Small local content arrays for the new sections — pure presentation, no logic.
+  // (500+ Verified owners removed — we have not launched yet.)
+  const stats = [
+    { value: "15+", label: "Rental categories" },
+    { value: "24/7", label: "Customer support" },
+    { value: "Zero", label: "Ownership hassle" },
+  ];
+
+  const steps = [
+    {
+      number: "01",
+      title: "Browse & compare",
+      copy: "Search by category, check availability and pricing from verified owners near you.",
+    },
+    {
+      number: "02",
+      title: "Book instantly",
+      copy: "Reserve the item for the dates you need — no paperwork, no showroom visits.",
+    },
+    {
+      number: "03",
+      title: "Use, return, repeat",
+      copy: "Pick up or get it delivered, use it for as long as you booked, then hand it back.",
+    },
+  ];
+
+  // Hero collage keeps the same four images as before, regardless of category order.
+  const heroPreview = ["Vehicles", "Home Appliances", "Electronics", "Furniture"]
+    .map((title) => services.find((s) => s.title === title))
+    .filter(Boolean);
+
+  // Footer links
+  const menuLinks = [
+    { label: "Partner with us", to: "/partner" },
+    { label: "Submit requirement / RFP", to: "/rfp" },
+    { label: "Contact us", to: "/contact" },
+    { label: "About us", to: "/about" },
+  ];
+
+  const pageLinks = [
+    { label: "Medical equipment", onClick: () => goToCategory("/rentals?category=Medical Equipment") },
+    { label: "Home appliances", onClick: () => goToCategory("/rentals?category=Home Appliances") },
+    { label: "Vehicles", onClick: () => showComingSoon("Vehicles") },
+    { label: "Electronics", onClick: () => goToCategory("/rentals?category=Electronics") },
+  ];
+
+  const supportLinks = [
+    { label: "Raise a complaint", to: "/complaint" },
+    { label: "Terms of use", to: "/terms" },
+    { label: "Privacy policy", to: "/privacy" },
+    { label: "FAQ", to: "/faq" },
+  ];
+
   return (
-    <div className="bg-white text-slate-900">
+    <div className="bg-[#FAFAF8] text-[#1B2433] font-[Inter,sans-serif]">
       {/* HERO */}
-      <section className="bg-gradient-to-b from-blue-50 to-white py-20 text-center">
-        <div className="max-w-3xl mx-auto px-4">
-          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900">
-            Rent Anything.{" "}
-            <span className="text-blue-600">Earn Anytime.</span>
-          </h1>
+      <section className="relative overflow-hidden bg-[#0E1B2E]">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 py-20 md:py-28 grid md:grid-cols-2 gap-12 items-center">
+          {/* Copy */}
+          <div>
+            <span className="inline-block text-[#E2A63B] text-sm font-semibold tracking-wide">
+              India's rental marketplace
+            </span>
+            <h1 className="mt-4 font-[Sora,sans-serif] text-4xl md:text-5xl font-bold text-white leading-[1.1]">
+              Why buy it when you can rent it for a day, a week, or a year?
+            </h1>
+            <p className="mt-6 text-base md:text-lg text-slate-300 leading-relaxed max-w-lg">
+              Vehicles, appliances, electronics, furniture and more — from
+              owners who've already been verified, at prices that beat buying
+              new.
+            </p>
 
-          <p className="mt-6 text-lg text-slate-600 leading-relaxed">
-            High-quality products from verified owners. From vehicles to property,
-            get what you need without the commitment of buying.
-          </p>
+            <div className="mt-9 flex flex-wrap gap-4">
+              <button
+                onClick={() => goToCategory("/rentals?category=Electronics")}
+                className="px-7 py-3.5 bg-[#E2A63B] text-[#0E1B2E] font-semibold rounded-md hover:bg-[#f0b856] transition-colors"
+              >
+                Browse rentals
+              </button>
+              <button
+                onClick={() => goToCategory("/list-item")}
+                className="px-7 py-3.5 border border-slate-500 text-white font-semibold rounded-md hover:border-[#E2A63B] hover:text-[#E2A63B] transition-colors"
+              >
+                List your item & earn
+              </button>
+            </div>
+          </div>
 
-          <div className="mt-10 flex justify-center gap-8 text-sm font-semibold text-slate-500">
-            <span>⚡ Instant Booking</span>
-            <span>🛡️ Verified Owners</span>
-            <span>💰 Best Prices</span>
+          {/* Offset image collage */}
+          <div className="relative hidden md:block h-[420px]">
+            {heroPreview.map((item, i) => {
+              const positions = [
+                "top-0 left-8 w-52 h-64 z-20",
+                "top-16 right-0 w-48 h-56 z-10",
+                "bottom-0 left-0 w-44 h-52 z-10",
+                "bottom-6 right-10 w-40 h-48 z-0",
+              ];
+              return (
+                <div
+                  key={item.title}
+                  className={`absolute ${positions[i]} rounded-lg overflow-hidden border-4 border-[#0E1B2E] shadow-2xl`}
+                >
+                  <img
+                    src={item.img}
+                    alt={item.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
+      {/* STATS BAR */}
+      <section className="bg-white border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 py-8 grid grid-cols-3 gap-6">
+          {stats.map((s) => (
+            <div key={s.label} className="text-center md:text-left">
+              <div className="font-[Sora,sans-serif] text-2xl md:text-3xl font-bold text-[#0E1B2E]">
+                {s.value}
+              </div>
+              <div className="text-sm text-slate-500 mt-1">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* CATEGORIES */}
-      <section className="max-w-8xl mx-auto px-7 py-16">
-        <div className="mb-10">
-          <h2 className="text-3xl font-extrabold text-slate-800">
-            Popular Categories
+      <section className="max-w-7xl mx-auto px-6 md:px-10 py-20">
+        <div className="mb-12 max-w-xl">
+          <h2 className="font-[Sora,sans-serif] text-3xl font-bold text-[#0E1B2E]">
+            Popular categories
           </h2>
-          <p className="text-slate-500 mt-2">
-            Browse our wide range of rental assets
+          <p className="text-slate-500 mt-3">
+            Every category is stocked by owners we've verified — pick what
+            you need and check availability in seconds.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {services.map((s, index) => (
             <div
               key={index}
-              onClick={() => goToCategory(s.path)}
-              className="group cursor-pointer bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+              onClick={() =>
+                s.comingSoon ? showComingSoon(s.title) : goToCategory(s.path)
+              }
+              className="group cursor-pointer bg-white border border-slate-200 rounded-lg overflow-hidden transition-all duration-200 hover:border-[#E2A63B] hover:shadow-lg"
             >
-              <div className="relative h-52 overflow-hidden">
+              <div className="relative h-44 overflow-hidden">
                 <img
                   src={s.img}
                   alt={s.title}
-                  className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   onError={(e) => {
                     e.target.src =
                       "https://via.placeholder.com/800x600?text=Category+Image";
                   }}
                 />
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                  <span className="text-white font-semibold border-2 border-white px-4 py-1 rounded-full">
-                    View All
-                  </span>
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0E1B2E]/70 via-transparent to-transparent" />
+
+                {/* Coming soon overlay (appears on hover) */}
+                {s.comingSoon && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#0E1B2E]/70 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    <span className="rounded-full bg-[#E2A63B] px-4 py-1.5 text-sm font-semibold text-[#0E1B2E]">
+                      Coming soon
+                    </span>
+                  </div>
+                )}
               </div>
 
-              <div className="p-5">
-                <h3 className="text-lg font-bold text-slate-800">
+              <div className="p-5 border-l-2 border-transparent group-hover:border-[#E2A63B] transition-colors">
+                <h3 className="text-base font-semibold text-[#0E1B2E]">
                   {s.title}
                 </h3>
-                <p className="text-sm text-slate-500 mt-1">
-                  {s.subtitle}
-                </p>
-                <div className="mt-4 text-blue-600 font-semibold text-sm">
-                  Explore Now →
+                <p className="text-sm text-slate-500 mt-1">{s.subtitle}</p>
+                <div className="mt-3 text-[#0E1B2E] font-semibold text-sm group-hover:text-[#E2A63B] transition-colors">
+                  {s.comingSoon ? "Coming soon" : "Explore now"}
                 </div>
               </div>
             </div>
@@ -191,12 +311,122 @@ const Home = () => {
         </div>
       </section>
 
+      {/* HOW IT WORKS */}
+      <section className="bg-white border-y border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 py-20">
+          <h2 className="font-[Sora,sans-serif] text-3xl font-bold text-[#0E1B2E] max-w-md">
+            Renting takes three steps
+          </h2>
+
+          <div className="mt-12 grid md:grid-cols-3 gap-10">
+            {steps.map((step) => (
+              <div key={step.number}>
+                <div className="font-[Sora,sans-serif] text-sm font-bold text-[#E2A63B]">
+                  {step.number}
+                </div>
+                <h3 className="mt-3 text-lg font-semibold text-[#0E1B2E]">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-slate-500 text-sm leading-relaxed">
+                  {step.copy}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* OWNER CTA */}
+      <section className="max-w-7xl mx-auto px-6 md:px-10 py-20">
+        <div className="bg-[#0E1B2E] rounded-2xl px-8 md:px-14 py-14 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div>
+            <h2 className="font-[Sora,sans-serif] text-2xl md:text-3xl font-bold text-white max-w-md">
+              Got something sitting idle? Put it to work.
+            </h2>
+            <p className="mt-3 text-slate-300 max-w-md">
+              List your vehicle, equipment, or gear and start earning from
+              renters in your area.
+            </p>
+          </div>
+          <button
+            onClick={() => goToCategory("/list-item")}
+            className="shrink-0 px-8 py-3.5 bg-[#E2A63B] text-[#0E1B2E] font-semibold rounded-md hover:bg-[#f0b856] transition-colors"
+          >
+            Start listing
+          </button>
+        </div>
+      </section>
+
       {/* FOOTER */}
-      <footer className="bg-slate-50 border-t border-slate-200 py-12 text-center">
-        <p className="font-bold text-slate-800">RentAll Marketplace</p>
-        <p className="text-sm text-slate-500 mt-2">
-          © {new Date().getFullYear()} • Built with ❤️ by Siddharth
-        </p>
+      <footer className="bg-[#0E1B2E] text-slate-300">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 py-14 grid md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10">
+          <div>
+            <p className="font-[Sora,sans-serif] text-xl font-bold text-white">
+              RentAll Marketplace
+            </p>
+            <p className="mt-4 text-sm leading-relaxed max-w-xs">
+              High-quality products from verified owners, without the
+              commitment of buying.
+            </p>
+            <p className="mt-6 text-sm">
+              Plot Number 000, Sector 00
+              <br />
+              Pune, Maharashtra 411001
+              <br />
+              +91-00000 00000
+            </p>
+          </div>
+
+          <div>
+            <p className="text-white font-semibold mb-4">Menu</p>
+            <ul className="space-y-2 text-sm">
+              {menuLinks.map((l) => (
+                <li key={l.label}>
+                  <Link to={l.to} className="hover:text-[#E2A63B] transition-colors">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="text-white font-semibold mb-4">Pages</p>
+            <ul className="space-y-2 text-sm">
+              {pageLinks.map((l) => (
+                <li key={l.label}>
+                  <button
+                    type="button"
+                    onClick={l.onClick}
+                    className="text-left hover:text-[#E2A63B] transition-colors"
+                  >
+                    {l.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="text-white font-semibold mb-4">Support</p>
+            <ul className="space-y-2 text-sm">
+              {supportLinks.map((l) => (
+                <li key={l.label}>
+                  <Link to={l.to} className="hover:text-[#E2A63B] transition-colors">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="border-t border-white/10">
+          <div className="max-w-7xl mx-auto px-6 md:px-10 py-6 flex flex-col md:flex-row justify-between text-xs text-slate-400 gap-2">
+            <span>© {new Date().getFullYear()} RentAll Marketplace. All rights reserved.</span>
+            <span>Built by Siddharth</span>
+          </div>
+        </div>
       </footer>
     </div>
   );

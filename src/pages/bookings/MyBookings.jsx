@@ -73,73 +73,101 @@ const MyBookings = () => {
   const history = bookings.filter(b => b.status === "CANCELLED" || b.status === "COMPLETED");
 
   return (
-    <div className="bg-[#f8fafc] min-h-screen font-sans pb-32">
-      {/* HEADER: INDUSTRIAL DARK */}
-      <div className="bg-[#0F172A] pt-32 pb-48 px-8 lg:px-20 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row justify-between items-end gap-8">
+    <div className="min-h-screen bg-slate-50 pb-20 font-sans text-slate-900">
+
+      {/* PAGE HEADER */}
+      <header className="relative overflow-hidden bg-slate-900">
+        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
+        <div className="pointer-events-none absolute -bottom-32 left-1/3 h-72 w-72 rounded-full bg-sky-500/10 blur-3xl"></div>
+
+        <div className="relative z-10 mx-auto flex max-w-6xl flex-col justify-between gap-8 px-6 pb-32 pt-16 md:flex-row md:items-end lg:px-8">
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="h-px w-8 bg-indigo-500"></span>
-              <p className="text-indigo-400 font-black uppercase tracking-[0.4em] text-[10px]">Registry Logs</p>
-            </div>
-            <h1 className="text-white text-6xl md:text-8xl font-black leading-[0.8] uppercase tracking-tighter italic">
-              FLEET<br /><span className="text-slate-500">HISTORY</span>
-            </h1>
+            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">My bookings</h1>
+            <p className="mt-2 max-w-xl text-base text-slate-400">
+              Track your reservations, complete payments and view your booking history.
+            </p>
           </div>
-          <div className="text-right">
-            <p className="text-white font-black text-4xl italic tracking-tighter">{bookings.length}</p>
-            <p className="text-slate-500 text-[9px] font-black uppercase tracking-widest">Total Logs Found</p>
+
+          <div className="flex gap-4">
+            <div className="min-w-[130px] rounded-xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-sm">
+              <p className="text-sm text-slate-400">Total bookings</p>
+              <p className="mt-1 text-3xl font-bold tracking-tight text-white">{bookings.length}</p>
+            </div>
+            <div className="min-w-[130px] rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-5 py-4 backdrop-blur-sm">
+              <p className="text-sm text-emerald-300/80">Active</p>
+              <p className="mt-1 text-3xl font-bold tracking-tight text-emerald-300">{active.length}</p>
+            </div>
           </div>
         </div>
-        
-        {/* Decorative Grid */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none" 
-             style={{ backgroundImage: `radial-gradient(#4f46e5 0.5px, transparent 0.5px)`, backgroundSize: '24px 24px' }}></div>
-      </div>
+      </header>
 
-      <div className="max-w-6xl mx-auto px-6 -mt-32 relative z-20 space-y-20">
-        
-        {/* ACTIVE TRANSMISSIONS */}
+      <div className="relative z-20 mx-auto -mt-20 max-w-6xl space-y-12 px-6 lg:px-8">
+
+        {/* ACTIVE BOOKINGS */}
         <section>
-          <div className="flex items-center gap-6 mb-10">
-            <div className="bg-indigo-600 h-8 w-2 rounded-full shadow-lg shadow-indigo-500/50"></div>
-            <h3 className="text-[12px] font-black uppercase tracking-[0.5em] text-slate-900">Active Transmissions</h3>
+          <div className="mb-5 flex items-center gap-3">
+            <span className="h-6 w-1.5 rounded-full bg-indigo-600"></span>
+            <h2 className="text-xl font-semibold text-white">Active bookings</h2>
           </div>
 
           {loading ? (
-            <div className="bg-white p-24 rounded-[3rem] shadow-2xl border border-slate-100 flex flex-col items-center">
-              <div className="w-12 h-12 border-t-4 border-indigo-600 border-r-4 border-r-transparent rounded-full animate-spin"></div>
-              <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Scanning Database...</p>
+            <div className="flex flex-col items-center rounded-2xl border border-slate-200 bg-white p-20 text-center shadow-lg">
+              <div className="mb-5 h-11 w-11 animate-spin rounded-full border-4 border-slate-200 border-t-indigo-600"></div>
+              <p className="text-sm font-medium text-slate-500">Loading your bookings…</p>
             </div>
           ) : active.length > 0 ? (
-            <div className="space-y-6">
+            <div className="space-y-5">
               {active.map(b => (
                 <BookingCard key={b.id} b={b} onPay={() => handlePayment(b)} onCancel={() => cancelBooking(b.id)} onDetails={() => navigate(`/bookings/${b.id}`)} />
               ))}
             </div>
           ) : (
-            <div className="bg-white/50 border-2 border-dashed border-slate-200 p-20 rounded-[3rem] text-center">
-              <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">No Active Operations Found</p>
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+                <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3M4 11h16M5 21h14a1 1 0 001-1V7a1 1 0 00-1-1H5a1 1 0 00-1 1v13a1 1 0 001 1z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900">No active bookings</h3>
+              <p className="mx-auto mt-1 max-w-sm text-sm text-slate-500">
+                When you reserve something, it will show up here.
+              </p>
             </div>
           )}
         </section>
 
-        {/* ARCHIVE */}
+        {/* BOOKING HISTORY */}
         <section>
-          <div className="flex items-center gap-6 mb-10">
-            <div className="bg-slate-300 h-8 w-2 rounded-full"></div>
-            <h3 className="text-[12px] font-black uppercase tracking-[0.5em] text-slate-400">Archived Records</h3>
+          <div className="mb-5 flex items-center gap-3">
+            <span className="h-6 w-1.5 rounded-full bg-slate-300"></span>
+            <h2 className="text-xl font-semibold text-slate-900">Booking history</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {history.map(b => (
-              <BookingCard key={b.id} b={b} isHistory={true} onDetails={() => navigate(`/bookings/${b.id}`)} />
-            ))}
-          </div>
+
+          {history.length > 0 ? (
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              {history.map(b => (
+                <BookingCard key={b.id} b={b} isHistory={true} onDetails={() => navigate(`/bookings/${b.id}`)} />
+              ))}
+            </div>
+          ) : (
+            !loading && (
+              <p className="rounded-2xl border border-slate-200 bg-white px-6 py-10 text-center text-sm text-slate-500">
+                Completed and cancelled bookings will appear here.
+              </p>
+            )
+          )}
         </section>
       </div>
     </div>
   );
 };
+
+/* ---------- UI-only helpers ---------- */
+const toSentenceCase = (str = "") =>
+  str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : "";
+
+const formatDate = (d) =>
+  new Date(d).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 
 const BookingCard = ({ b, isHistory, onPay, onCancel, onDetails }) => {
   const statusColors = {
@@ -149,78 +177,124 @@ const BookingCard = ({ b, isHistory, onPay, onCancel, onDetails }) => {
     COMPLETED: "bg-slate-900"
   };
 
-  return (
-    <div className={`relative overflow-hidden transition-all duration-500 
-      ${isHistory 
-        ? 'bg-white/40 border border-slate-200 rounded-[2rem] p-6 hover:bg-white' 
-        : 'bg-white border border-slate-100 rounded-[3rem] p-10 shadow-2xl shadow-slate-200/60 hover:-translate-y-2'
-      }`}>
-      
-      {/* Side Status Bar */}
-      <div className={`absolute top-0 left-0 bottom-0 w-2 ${statusColors[b.status] || 'bg-slate-200'}`}></div>
+  const statusBadge = {
+    CONFIRMED: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
+    PENDING: "bg-amber-50 text-amber-700 ring-amber-600/20",
+    CANCELLED: "bg-rose-50 text-rose-700 ring-rose-600/20",
+    COMPLETED: "bg-slate-100 text-slate-700 ring-slate-500/20",
+  };
 
-      <div className="flex flex-col lg:flex-row justify-between gap-8">
-        <div className="flex gap-8 items-start">
-          {/* Asset Type */}
-          <div className={`h-20 w-20 flex-shrink-0 rounded-3xl flex items-center justify-center text-3xl shadow-inner
-            ${isHistory ? 'bg-slate-100 grayscale' : 'bg-slate-50 border border-slate-100 animate-pulse-slow'}`}>
-            {b.bookingType === "WITH_DRIVER" ? "🤵" : "🚗"}
+  return (
+    <div
+      className={`relative overflow-hidden rounded-2xl border bg-white transition duration-300
+      ${isHistory
+        ? "border-slate-200 p-5 shadow-sm hover:shadow-md"
+        : "border-slate-200 p-6 shadow-lg shadow-slate-200/60 hover:-translate-y-0.5 hover:shadow-xl sm:p-8"
+      }`}
+    >
+      {/* Side status bar */}
+      <div className={`absolute bottom-0 left-0 top-0 w-1.5 ${statusColors[b.status] || "bg-slate-200"}`}></div>
+
+      <div className="flex flex-col justify-between gap-6 lg:flex-row">
+        <div className="flex items-start gap-5">
+          {/* Booking type icon */}
+          <div
+            className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl ${
+              isHistory ? "bg-slate-100 text-slate-400" : "bg-indigo-50 text-indigo-600"
+            }`}
+          >
+            {b.bookingType === "WITH_DRIVER" ? (
+              <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.1a7.5 7.5 0 0115 0" />
+              </svg>
+            ) : (
+              <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l1.5-4.5A2 2 0 018.4 7h7.2a2 2 0 011.9 1.5L19 13m-14 0h14m-14 0v4a1 1 0 001 1h1a1 1 0 001-1v-1h8v1a1 1 0 001 1h1a1 1 0 001-1v-4M7.5 15.5h.01M16.5 15.5h.01" />
+              </svg>
+            )}
           </div>
 
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <span className={`h-2 w-2 rounded-full ${statusColors[b.status]}`}></span>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">{b.status}</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded">
-                {b.bookingType.replace("_", " ")}
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${
+                  statusBadge[b.status] || "bg-slate-100 text-slate-700 ring-slate-500/20"
+                }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full ${statusColors[b.status]}`}></span>
+                {toSentenceCase(b.status)}
+              </span>
+              <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700 ring-1 ring-inset ring-indigo-600/10">
+                {toSentenceCase(b.bookingType.replace("_", " "))}
               </span>
             </div>
-            
-            <h4 className="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none italic">
-              LOG <span className="text-slate-300">#{b.id}</span>
-            </h4>
 
-            <div className="flex flex-col gap-1">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <span className="text-indigo-500 font-black italic">FROM:</span> {new Date(b.startDate).toDateString()}
+            <h3 className="text-xl font-semibold text-slate-900">
+              Booking <span className="text-slate-400">#{b.id}</span>
+            </h3>
+
+            <div className="flex flex-col gap-1 text-sm text-slate-500 sm:flex-row sm:gap-5">
+              <p className="flex items-center gap-2">
+                <span className="font-medium text-slate-700">From</span> {formatDate(b.startDate)}
               </p>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <span className="text-rose-500 font-black italic">TO:</span> {new Date(b.endDate).toDateString()}
+              <p className="flex items-center gap-2">
+                <span className="font-medium text-slate-700">To</span> {formatDate(b.endDate)}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col justify-between items-end gap-6 border-t lg:border-t-0 pt-6 lg:pt-0 border-slate-100">
-          <div className="text-right">
-            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Authorized</p>
-            <p className="text-4xl font-black text-slate-900 tracking-tighter italic">₹{b.totalAmount}</p>
+        <div className="flex flex-col items-start justify-between gap-5 border-t border-slate-100 pt-5 lg:items-end lg:border-t-0 lg:pt-0">
+          <div className="lg:text-right">
+            <p className="text-xs font-medium text-slate-500">Total amount</p>
+            <p className={`font-bold tracking-tight text-slate-900 ${isHistory ? "text-2xl" : "text-3xl"}`}>
+              ₹{b.totalAmount}
+            </p>
           </div>
 
-          <div className="flex gap-2 w-full lg:w-auto">
+          <div className="flex w-full flex-wrap gap-2 lg:w-auto">
             {!isHistory && b.status === "PENDING" && (
               <>
-                <button onClick={onPay} className="flex-1 lg:flex-none bg-indigo-600 text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 transition-all shadow-xl shadow-indigo-100">Initialize Payment</button>
-                <button onClick={onCancel} className="flex-1 lg:flex-none bg-white text-rose-500 border border-rose-100 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-50 transition-all">Abort</button>
+                <button
+                  onClick={onPay}
+                  className="flex-1 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-200 active:scale-[0.98] lg:flex-none"
+                >
+                  Pay now
+                </button>
+                <button
+                  onClick={onCancel}
+                  className="flex-1 rounded-xl border border-rose-200 bg-white px-5 py-3 text-sm font-semibold text-rose-600 transition hover:bg-rose-50 focus:outline-none focus-visible:ring-4 focus-visible:ring-rose-100 lg:flex-none"
+                >
+                  Cancel
+                </button>
               </>
             )}
-            <button onClick={onDetails} className="flex-1 lg:flex-none bg-slate-100 text-slate-500 px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all border border-slate-200">
-              {isHistory ? "View Record" : "Mission Brief"}
+            <button
+              onClick={onDetails}
+              className="flex-1 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-indigo-300 hover:text-indigo-600 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100 lg:flex-none"
+            >
+              View details
             </button>
           </div>
         </div>
       </div>
 
-      {/* SECURE OTP FLOATING BOX */}
+      {/* PICKUP OTP */}
       {!isHistory && b.status === "CONFIRMED" && b.pickupOtp && (
-        <div className="mt-10 border-t border-slate-50 pt-6 flex items-center justify-between">
-           <div className="flex items-center gap-3">
-              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></div>
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Security Token Ready</p>
-           </div>
-           <div className="bg-slate-900 px-6 py-3 rounded-2xl shadow-xl shadow-indigo-200/20">
-              <span className="text-white font-black text-2xl tracking-[0.4em] ml-2">{b.pickupOtp}</span>
-           </div>
+        <div className="mt-6 flex flex-col items-start justify-between gap-4 rounded-xl border border-emerald-100 bg-emerald-50/60 p-4 sm:flex-row sm:items-center">
+          <div className="flex items-center gap-3">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+            </span>
+            <div>
+              <p className="text-sm font-semibold text-emerald-800">Pickup code ready</p>
+              <p className="text-xs text-emerald-700/80">Share this code with the owner at pickup.</p>
+            </div>
+          </div>
+          <div className="rounded-xl bg-slate-900 px-5 py-2.5 shadow-sm">
+            <span className="text-xl font-bold tracking-[0.35em] text-white">{b.pickupOtp}</span>
+          </div>
         </div>
       )}
     </div>

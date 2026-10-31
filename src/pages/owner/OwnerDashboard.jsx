@@ -6,7 +6,7 @@ import OwnerNavbar from "@/components/common/OwnerNavbar";
 export default function OwnerDashboard() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
-  
+
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -26,55 +26,101 @@ export default function OwnerDashboard() {
   }, [user?.id]);
 
   return (
-    <div style={styles.page}>
+    <div className="bg-[#FAFAF8] min-h-screen font-[Inter,sans-serif]">
       <OwnerNavbar />
-      
-      <div style={styles.container}>
+
+      <div className="max-w-5xl mx-auto px-6 py-12">
         {/* Breadcrumb / Back Link */}
-        <button onClick={() => navigate("/owner/home")} style={styles.backBtn}>
-          ← Back to Main Hub
+        <button
+          onClick={() => navigate("/owner/home")}
+          className="text-[#0E1B2E] font-semibold text-sm hover:text-[#E2A63B] transition-colors mb-6"
+        >
+          ← Back to main hub
         </button>
 
-        <header style={styles.header}>
-          <h2 style={styles.title}>Vehicle Fleet Management</h2>
-          <p style={styles.subtitle}>Control your cars, bikes, and check your transport earnings</p>
+        <header className="mb-8 text-left">
+          <h2 className="font-[Sora,sans-serif] text-3xl font-bold text-[#0E1B2E]">
+            Vehicle fleet management
+          </h2>
+          <p className="text-slate-500 mt-2">
+            Control your cars, bikes, and check your transport earnings.
+          </p>
         </header>
 
         {/* --- VEHICLE EARNINGS BANNER --- */}
-        <div style={styles.earningsCard}>
-          <div style={styles.earningInfo}>
-            <span style={styles.earningLabel}>Vehicle Business Earnings</span>
-            <h3 style={styles.earningValue}>
+        <div className="bg-[#0E1B2E] rounded-xl px-8 py-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
+          <div>
+            <span className="text-slate-400 text-sm">
+              Vehicle business earnings
+            </span>
+            <h3 className="font-[Sora,sans-serif] text-3xl font-bold text-white mt-1">
               {loading ? "..." : `₹${balance.toLocaleString()}`}
             </h3>
           </div>
-          <Link to="/owner/wallet" style={styles.walletBtn}>View Wallet Details</Link>
+          <Link
+            to="/owner/wallet"
+            className="bg-[#E2A63B] text-[#0E1B2E] px-5 py-3 rounded-md font-semibold text-sm hover:bg-[#f0b856] transition-colors shrink-0"
+          >
+            View wallet details
+          </Link>
         </div>
 
-        <div style={styles.grid}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* --- BIKES SECTION --- */}
-          <div style={styles.sectionCard}>
-            <div style={styles.cardHeader}>
-               <span style={styles.iconCircle}>🏍️</span>
-               <h3 style={styles.sectionTitle}>Bike Fleet</h3>
+          <div className="p-7 bg-white rounded-xl border border-slate-200">
+            <div className="flex items-center gap-4 mb-4">
+              <span className="w-11 h-11 bg-[#0E1B2E]/5 rounded-lg flex items-center justify-center text-2xl">
+                🏍️
+              </span>
+              <h3 className="text-lg font-semibold text-[#0E1B2E]">
+                Bike fleet
+              </h3>
             </div>
-            <p style={styles.cardText}>Manage scooters, sports bikes, and daily commuters.</p>
-            <div style={styles.buttonGroup}>
-              <Link to="/owner/add-bike" style={styles.primaryLink}>+ Add New Bike</Link>
-              <Link to="/owner/my-bikes" style={styles.secondaryLink}>View My Bikes</Link>
+            <p className="text-slate-500 text-sm mb-6">
+              Manage scooters, sports bikes, and daily commuters.
+            </p>
+            <div className="flex flex-col gap-3">
+              <Link
+                to="/owner/add-bike"
+                className="block text-center py-3.5 bg-[#0E1B2E] text-white rounded-md font-semibold text-sm hover:bg-[#16283f] transition-colors"
+              >
+                + Add new bike
+              </Link>
+              <Link
+                to="/owner/my-bikes"
+                className="block text-center py-3.5 bg-white text-[#0E1B2E] rounded-md font-semibold text-sm border border-slate-200 hover:border-[#E2A63B] transition-colors"
+              >
+                View my bikes
+              </Link>
             </div>
           </div>
 
           {/* --- CARS SECTION --- */}
-          <div style={styles.sectionCard}>
-            <div style={styles.cardHeader}>
-               <span style={styles.iconCircle}>🚗</span>
-               <h3 style={styles.sectionTitle}>Car Fleet</h3>
+          <div className="p-7 bg-white rounded-xl border border-slate-200">
+            <div className="flex items-center gap-4 mb-4">
+              <span className="w-11 h-11 bg-[#0E1B2E]/5 rounded-lg flex items-center justify-center text-2xl">
+                🚗
+              </span>
+              <h3 className="text-lg font-semibold text-[#0E1B2E]">
+                Car fleet
+              </h3>
             </div>
-            <p style={styles.cardText}>Manage hatchbacks, SUVs, and luxury rentals.</p>
-            <div style={styles.buttonGroup}>
-              <Link to="/owner/add-car" style={styles.primaryLink}>+ Add New Car</Link>
-              <Link to="/owner/my-cars" style={styles.secondaryLink}>View My Cars</Link>
+            <p className="text-slate-500 text-sm mb-6">
+              Manage hatchbacks, SUVs, and luxury rentals.
+            </p>
+            <div className="flex flex-col gap-3">
+              <Link
+                to="/owner/add-car"
+                className="block text-center py-3.5 bg-[#0E1B2E] text-white rounded-md font-semibold text-sm hover:bg-[#16283f] transition-colors"
+              >
+                + Add new car
+              </Link>
+              <Link
+                to="/owner/my-cars"
+                className="block text-center py-3.5 bg-white text-[#0E1B2E] rounded-md font-semibold text-sm border border-slate-200 hover:border-[#E2A63B] transition-colors"
+              >
+                View my cars
+              </Link>
             </div>
           </div>
         </div>
@@ -82,48 +128,3 @@ export default function OwnerDashboard() {
     </div>
   );
 }
-
-const styles = {
-  page: { background: "#f8fafc", minHeight: "100vh" },
-  container: { padding: "40px 20px", maxWidth: "1000px", margin: "0 auto", fontFamily: "Inter, sans-serif" },
-  backBtn: { background: "none", border: "none", color: "#6366f1", fontWeight: "600", cursor: "pointer", marginBottom: "20px" },
-  header: { marginBottom: "30px", textAlign: "left" },
-  title: { fontSize: "32px", color: "#0f172a", margin: "0 0 8px 0", fontWeight: "800" },
-  subtitle: { color: "#64748b", fontSize: "16px" },
-  
-  // Earnings Section
-  earningsCard: { 
-    background: "linear-gradient(135deg, #1e293b 0%, #334155 100%)", 
-    padding: "30px", borderRadius: "20px", display: "flex", 
-    justifyContent: "space-between", alignItems: "center", marginBottom: "40px",
-    color: "#fff", boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)"
-  },
-  earningLabel: { fontSize: "14px", opacity: 0.8 },
-  earningValue: { fontSize: "32px", margin: "5px 0 0 0", fontWeight: "700" },
-  walletBtn: { 
-    backgroundColor: "#fff", color: "#1e293b", padding: "12px 20px", 
-    borderRadius: "12px", textDecoration: "none", fontWeight: "700", fontSize: "14px" 
-  },
-
-  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "25px" },
-  sectionCard: { 
-    padding: "30px", backgroundColor: "#fff", borderRadius: "20px", 
-    boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", border: "1px solid #e2e8f0"
-  },
-  cardHeader: { display: "flex", alignItems: "center", gap: "15px", marginBottom: "15px" },
-  iconCircle: { width: "45px", height: "45px", background: "#f1f5f9", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px" },
-  sectionTitle: { fontSize: "20px", fontWeight: "700", color: "#1e293b", margin: 0 },
-  cardText: { color: "#64748b", fontSize: "14px", marginBottom: "25px" },
-  
-  buttonGroup: { display: "flex", flexDirection: "column", gap: "12px" },
-  primaryLink: { 
-    display: "block", textAlign: "center", padding: "14px", 
-    backgroundColor: "#2563eb", color: "#fff", textDecoration: "none", 
-    borderRadius: "12px", fontWeight: "700", transition: "0.2s" 
-  },
-  secondaryLink: { 
-    display: "block", textAlign: "center", padding: "14px", 
-    backgroundColor: "#fff", color: "#475569", textDecoration: "none", 
-    borderRadius: "12px", fontWeight: "600", border: "1px solid #e2e8f0"
-  }
-};

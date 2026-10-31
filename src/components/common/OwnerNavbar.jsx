@@ -15,77 +15,83 @@ const OwnerNavbar = () => {
   // Helper to check if a link is active for the underline effect
   const isActive = (path) => location.pathname === path;
 
+  /* ---------- UI-only helper: link styling ---------- */
+  const linkClass = (path) =>
+    `rounded-lg px-3 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100 ${
+      isActive(path)
+        ? "bg-indigo-50 text-indigo-600"
+        : "text-slate-600 hover:bg-slate-50 hover:text-indigo-600"
+    }`;
+
   return (
-    <nav className="h-[80px] bg-white border-b border-gray-100 flex justify-between items-center px-6 lg:px-12 sticky top-0 z-[1000] shadow-sm">
-      
-      {/* BRANDING: BEAOWNER WITH LOGO (Using your styles) */}
-      <div 
-        className="flex items-center gap-3 cursor-pointer group"
-        onClick={() => navigate("/owner/home")}
-      >
-        <div className="h-12 w-12 overflow-hidden rounded-xl border border-slate-100 shadow-sm">
-          <img 
-            src="/Gemini_Generated_Image_hizgnvhizgnvhizg.jpg" 
-            alt="BEAOWNER Logo" 
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-            onError={(e) => {
-                e.target.onerror = null; 
-                e.target.src="https://placehold.co/100x100?text=B"
-            }}
-          />
-        </div>
-        <div className="flex flex-col">
-          <h2 className="m-0 font-black text-2xl tracking-tighter uppercase italic text-[#0F172A]">
-            BEA<span className="text-indigo-600">OWNER</span>
-          </h2>
-          <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] leading-none mt-1">
-            Owner Control Panel
-          </span>
-        </div>
-      </div>
+    <nav className="sticky top-0 z-[1000] border-b border-slate-200 bg-white/90 backdrop-blur-md">
+      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
 
-      {/* NAVIGATION LINKS - Increased font-size and spacing */}
-      <div className="flex items-center gap-8">
-        <Link
-          to="/owner/home"
-          className={`text-[12px] font-black uppercase tracking-[0.2em] transition-colors ${
-            isActive("/owner/home") ? "text-indigo-600 underline underline-offset-8" : "text-slate-400 hover:text-indigo-600"
-          }`}
+        {/* BRANDING: BEAOWNER WITH LOGO */}
+        <div
+          className="group flex shrink-0 cursor-pointer items-center gap-3"
+          onClick={() => navigate("/owner/home")}
         >
-          Dashboard
-        </Link>
-
-        <Link
-          to="/owner/my-rentals"
-          className={`text-[12px] font-black uppercase tracking-[0.2em] transition-colors ${
-            isActive("/owner/my-rentals") ? "text-indigo-600 underline underline-offset-8" : "text-slate-400 hover:text-indigo-600"
-          }`}
-        >
-          My Inventory
-        </Link>
-
-        <Link
-          to="/owner/my-bookings"
-          className={`text-[12px] font-black uppercase tracking-[0.2em] transition-colors ${
-            isActive("/owner/my-bookings") ? "text-indigo-600 underline underline-offset-8" : "text-slate-400 hover:text-indigo-600"
-          }`}
-        >
-          Manage Bookings
-        </Link>
-
-        {/* USER & AUTH SECTION */}
-        <div className="flex items-center gap-6 pl-6 border-l border-slate-100">
-          <div className="hidden lg:flex flex-col items-end mr-2">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Connected as</span>
-            <span className="text-[11px] font-bold text-slate-900">{user?.email}</span>
+          <div className="h-10 w-10 overflow-hidden rounded-xl border border-slate-200 shadow-sm sm:h-11 sm:w-11">
+            <img
+              src="/Gemini_Generated_Image_hizgnvhizgnvhizg.jpg"
+              alt="BEAOWNER Logo"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://placehold.co/100x100?text=B";
+              }}
+            />
           </div>
-          
-          <button
-            onClick={handleLogout}
-            className="bg-rose-50 text-rose-600 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-rose-600 hover:text-white transition-all shadow-sm border border-rose-100"
-          >
-            Logout
-          </button>
+          <div className="hidden flex-col sm:flex">
+            <h2 className="m-0 text-xl font-extrabold uppercase leading-none tracking-tight text-slate-900">
+              BEA<span className="text-indigo-600">OWNER</span>
+            </h2>
+            <span className="mt-1 text-xs leading-none text-slate-500">
+              Owner control panel
+            </span>
+          </div>
+        </div>
+
+        {/* NAVIGATION LINKS */}
+        <div className="flex items-center gap-1 sm:gap-2">
+          <Link to="/owner/home" className={linkClass("/owner/home")}>
+            Dashboard
+          </Link>
+
+          <Link to="/owner/my-rentals" className={linkClass("/owner/my-rentals")}>
+            <span className="sm:hidden">Inventory</span>
+            <span className="hidden sm:inline">My Inventory</span>
+          </Link>
+
+          <Link to="/owner/my-bookings" className={linkClass("/owner/my-bookings")}>
+            <span className="sm:hidden">Bookings</span>
+            <span className="hidden sm:inline">Manage Bookings</span>
+          </Link>
+
+          {/* USER & AUTH SECTION */}
+          <div className="ml-1 flex items-center gap-3 border-l border-slate-200 pl-2 sm:ml-2 sm:gap-4 sm:pl-4">
+            <div className="hidden items-center gap-3 lg:flex">
+              {user?.email && (
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold uppercase text-indigo-700">
+                  {user.email.charAt(0)}
+                </div>
+              )}
+              <div className="flex max-w-[200px] flex-col">
+                <span className="text-xs text-slate-500">Connected as</span>
+                <span className="truncate text-sm font-semibold text-slate-900" title={user?.email}>
+                  {user?.email}
+                </span>
+              </div>
+            </div>
+
+            <button
+              onClick={handleLogout}
+              className="rounded-xl border border-rose-200 bg-white px-4 py-2.5 text-sm font-semibold text-rose-600 transition hover:bg-rose-600 hover:text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-rose-100"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </div>
     </nav>

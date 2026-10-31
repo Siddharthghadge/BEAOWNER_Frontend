@@ -1,5 +1,13 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+
+/* ---------- UI-only helper: link styling (active page highlighted) ---------- */
+const navLinkClass = ({ isActive }) =>
+  `relative rounded-lg px-3 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100 ${
+    isActive
+      ? "text-indigo-600 bg-indigo-50"
+      : "text-slate-600 hover:text-indigo-600 hover:bg-slate-50"
+  }`;
 
 const MainNavbar = () => {
   const navigate = useNavigate();
@@ -12,86 +20,81 @@ const MainNavbar = () => {
   };
 
   return (
-    <nav className="h-[80px] bg-white border-b border-gray-100 flex justify-between items-center px-6 lg:px-12 sticky top-0 z-50 shadow-sm">
-      {/* BRANDING: BEAOWNER WITH LOGO */}
-      <div 
-        className="flex items-center gap-3 cursor-pointer group"
-        onClick={() => navigate("/")}
-      >
-        <div className="h-12 w-12 overflow-hidden rounded-xl border border-slate-100 shadow-sm">
-          <img 
-            /* IMPORTANT: Ensure this file is in your 'public' folder. 
-               Rename it to 'logo.jpg' for simplicity or use the full name below.
-            */
-            src="/Gemini_Generated_Image_hizgnvhizgnvhizg.jpg" 
-            alt="BEAOWNER Logo" 
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-            onError={(e) => {
-                e.target.onerror = null; 
-                e.target.src="https://placehold.co/100x100?text=B"
-            }}
-          />
-        </div>
-        <h2 className="m-0 font-black text-2xl tracking-tighter uppercase italic text-[#0F172A]">
-          BEA<span className="text-indigo-600">OWNER</span>
-        </h2>
-      </div>
+    <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur-md">
+      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
 
-      {/* NAVIGATION LINKS */}
-      <div className="flex items-center gap-8">
-        <Link
-          to="/"
-          className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-indigo-600 transition-colors"
+        {/* BRANDING: BEAOWNER WITH LOGO */}
+        <div
+          className="group flex shrink-0 cursor-pointer items-center gap-3"
+          onClick={() => navigate("/")}
         >
-          Home
-        </Link>
-
-        {isLoggedIn && (
-          <>
-            {/* MATCHING ROUTE: Ensure your Route in App.js is <Route path="/my-bookings" ... />
-            */}
-            <Link
-              to="/bookings"
-              className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-indigo-600 transition-colors"
-            >
-              My Bookings
-            </Link>
-            <Link
-              to="/want-to-earn"
-              className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-indigo-600 transition-colors flex items-center gap-1"
-            >
-              Earn <span className="text-[14px]">💰</span>
-            </Link>
-          </>
-        )}
-
-        {/* AUTH BUTTONS */}
-        {!isLoggedIn ? (
-          <div className="flex items-center gap-4 pl-4 border-l border-slate-100">
-            <Link
-              to="/login"
-              className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-900 hover:text-indigo-600 transition-colors"
-            >
-              Login
-            </Link>
-
-            <Link
-              to="/register"
-              className="bg-[#0F172A] text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-indigo-600 transition-all shadow-lg shadow-slate-200"
-            >
-              Register
-            </Link>
+          <div className="h-10 w-10 overflow-hidden rounded-xl border border-slate-200 shadow-sm sm:h-11 sm:w-11">
+            <img
+              /* IMPORTANT: Ensure this file is in your 'public' folder.
+                 Rename it to 'logo.jpg' for simplicity or use the full name below.
+              */
+              src="/Gemini_Generated_Image_hizgnvhizgnvhizg.jpg"
+              alt="BEAOWNER Logo"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://placehold.co/100x100?text=B";
+              }}
+            />
           </div>
-        ) : (
-          <div className="pl-4 border-l border-slate-100">
-            <button
-              onClick={handleLogout}
-              className="bg-rose-50 text-rose-600 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-rose-600 hover:text-white transition-all shadow-sm"
-            >
-              Logout
-            </button>
-          </div>
-        )}
+          <h2 className="m-0 hidden text-xl font-extrabold uppercase tracking-tight text-slate-900 sm:block">
+            BEA<span className="text-indigo-600">OWNER</span>
+          </h2>
+        </div>
+
+        {/* NAVIGATION LINKS */}
+        <div className="flex items-center gap-1 sm:gap-2">
+          <NavLink to="/" end className={navLinkClass}>
+            Home
+          </NavLink>
+
+          {isLoggedIn && (
+            <>
+              {/* MATCHING ROUTE: Ensure your Route in App.js is <Route path="/my-bookings" ... />
+              */}
+              <NavLink to="/bookings" className={navLinkClass}>
+                <span className="sm:hidden">Bookings</span>
+                <span className="hidden sm:inline">My Bookings</span>
+              </NavLink>
+              <NavLink to="/want-to-earn" className={navLinkClass}>
+                Earn
+              </NavLink>
+            </>
+          )}
+
+          {/* AUTH BUTTONS */}
+          {!isLoggedIn ? (
+            <div className="ml-1 flex items-center gap-2 border-l border-slate-200 pl-2 sm:ml-2 sm:gap-3 sm:pl-4">
+              <Link
+                to="/login"
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-900 transition-colors hover:text-indigo-600 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100"
+              >
+                Login
+              </Link>
+
+              <Link
+                to="/register"
+                className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-200 active:scale-[0.98]"
+              >
+                Register
+              </Link>
+            </div>
+          ) : (
+            <div className="ml-1 border-l border-slate-200 pl-2 sm:ml-2 sm:pl-4">
+              <button
+                onClick={handleLogout}
+                className="rounded-xl border border-rose-200 bg-white px-4 py-2.5 text-sm font-semibold text-rose-600 transition hover:bg-rose-600 hover:text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-rose-100"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );

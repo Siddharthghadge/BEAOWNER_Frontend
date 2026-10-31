@@ -6,6 +6,30 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { API_URLS } from '@/config/apiUrls';
 
+/* ---------- UI-only helpers (no business logic) ---------- */
+const inputBase =
+  "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-900 placeholder-slate-400 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100";
+
+const Field = ({ label, hint, children, className = "" }) => (
+  <div className={className}>
+    <label className="mb-1.5 block text-sm font-semibold text-slate-700">{label}</label>
+    {children}
+    {hint && <p className="mt-1.5 text-xs text-slate-500">{hint}</p>}
+  </div>
+);
+
+const Section = ({ title, subtitle, children }) => (
+  <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <div className="mb-6 border-b border-slate-100 pb-4">
+      <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
+      {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
+    </div>
+    {children}
+  </section>
+);
+
+const DURATION_LABELS = { DAILY: 'Per day', WEEKLY: 'Per week', MONTHLY: 'Per month' };
+
 const AddRentalItem = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -91,131 +115,239 @@ const AddRentalItem = () => {
   };
 
   return (
-    <div className="bg-[#f8fafc] min-h-screen pb-20">
+    <div className="min-h-screen bg-slate-50 pb-28 font-sans text-slate-900">
       <OwnerNavbar />
-      
-      {/* HEADER */}
-      <div className="bg-[#0F172A] py-16 px-6 border-b border-indigo-500/20">
-        <div className="max-w-4xl mx-auto">
-          <button onClick={() => navigate(-1)} className="text-indigo-400 font-black text-xs tracking-widest mb-4 uppercase">← Return</button>
-          <h1 className="text-white text-4xl font-black tracking-tight uppercase">PUBLISH <span className="italic text-indigo-500">{categoryNameFromUrl}</span></h1>
-        </div>
-      </div>
 
-      <div className="max-w-4xl mx-auto px-6 -mt-10">
-        <form onSubmit={handleSubmit} className="bg-white rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden">
-          <div className="p-8 md:p-12 space-y-12">
-            
-           {/* --- SECTION: MEDIA --- */}
-            <div>
-              <label className="text-slate-900 font-black text-xl uppercase tracking-tight block mb-6">
-                01. Upload Photos <span className="text-indigo-600 font-normal text-sm lowercase tracking-normal">(Max 3)</span>
-              </label>
-              <div className="flex gap-4 flex-wrap">
-                {imagePreviews.map((src, index) => (
-                  <div key={index} className="relative w-36 h-36 rounded-2xl overflow-hidden border-4 border-slate-50 shadow-md">
-                    <img src={src} alt="preview" className="w-full h-full object-cover" />
-                    <button 
-                      type="button" 
-                      onClick={() => removeImage(index)} 
-                      className="absolute top-2 right-2 bg-black/70 text-white w-7 h-7 rounded-full flex items-center justify-center backdrop-blur-sm"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-                {images.length < 3 && (
-                  <div 
-                    onClick={() => fileInputRef.current.click()} 
-                    className="w-36 h-36 border-4 border-dashed border-slate-100 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-indigo-50 hover:border-indigo-200 transition-all group"
-                  >
-                    <span className="text-3xl text-slate-300 group-hover:text-indigo-500 mb-1">+</span>
-                    <span className="text-[10px] font-black text-slate-400 group-hover:text-indigo-600 uppercase tracking-widest">Add Image</span>
-                  </div>
-                )}
-              </div>
-              <input type="file" hidden ref={fileInputRef} multiple accept="image/*" onChange={handleFileSelect} />
-            </div>
-
-            {/* MAIN INFO */}
-            <section className="space-y-8">
-              <label className="block text-lg font-black text-slate-800 uppercase tracking-tight border-b-4 border-indigo-600 pb-2 w-fit">02. Listing Details</label>
-              
-              <div className="grid gap-6">
-                <div>
-                  <label className="block text-base font-black text-slate-600 uppercase mb-2">Listing Title</label>
-                  <input className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-4 text-lg font-bold outline-none focus:border-indigo-600 transition-all" placeholder="Enter a catchy name for your item" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
-                </div>
-
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-base font-black text-slate-600 uppercase mb-2">Condition</label>
-                    <select className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-4 text-lg font-bold outline-none focus:border-indigo-600 appearance-none" value={formData.itemCondition} onChange={e => setFormData({...formData, itemCondition: e.target.value})}>
-                      <option value="NEW">Brand New</option>
-                      <option value="EXCELLENT">Excellent</option>
-                      <option value="GOOD">Good</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-base font-black text-slate-600 uppercase mb-2">Security Deposit (₹)</label>
-                    <input type="number" className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-4 text-lg font-bold outline-none focus:border-indigo-600" placeholder="Refundable amount" required value={formData.securityDeposit} onChange={e => setFormData({...formData, securityDeposit: e.target.value})} />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-base font-black text-slate-600 uppercase mb-2">Description</label>
-                  <textarea className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-4 text-lg font-medium outline-none focus:border-indigo-600 h-32 resize-none" placeholder="Provide details about specs and usage..." required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
-                </div>
-              </div>
-            </section>
-
-            {/* PRICING WITH EXPLICIT DURATION OPTIONS */}
-            <section className="space-y-8">
-              <label className="block text-lg font-black text-slate-800 uppercase tracking-tight border-b-4 border-emerald-500 pb-2 w-fit">03. Rental Pricing</label>
-              
-              <div className="flex flex-col md:flex-row gap-6">
-                <div className="flex-1">
-                  <label className="block text-base font-black text-slate-600 uppercase mb-2">Price (₹)</label>
-                  <input type="number" className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-4 text-2xl font-black text-emerald-600 outline-none focus:border-emerald-500 transition-all" placeholder="0.00" required value={priceInput} onChange={e => setPriceInput(e.target.value)} />
-                </div>
-                
-                <div className="flex-1">
-                  <label className="block text-base font-black text-slate-600 uppercase mb-2">Billing Cycle</label>
-                  <div className="grid grid-cols-3 gap-2 h-[64px]">
-                    {['DAILY', 'WEEKLY', 'MONTHLY'].map((type) => (
-                      <button
-                        key={type}
-                        type="button"
-                        onClick={() => setSelectedDuration(type)}
-                        className={`rounded-xl font-black text-[10px] tracking-widest uppercase transition-all border-2 
-                          ${selectedDuration === type 
-                            ? 'bg-emerald-600 border-emerald-600 text-white shadow-lg' 
-                            : 'bg-white border-slate-200 text-slate-400 hover:border-emerald-200'}`}
-                      >
-                        {type === 'DAILY' ? 'Per Day' : type === 'WEEKLY' ? 'Per Week' : 'Per Month'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* LOCATION */}
-            <section className="space-y-8">
-              <label className="block text-lg font-black text-slate-800 uppercase tracking-tight border-b-4 border-orange-500 pb-2 w-fit">04. Pickup Address</label>
-              <div className="grid grid-cols-2 gap-4">
-                <input className="bg-slate-50 border-2 border-slate-200 rounded-xl p-4 text-lg font-bold outline-none focus:border-orange-500" placeholder="City" required value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} />
-                <input className="bg-slate-50 border-2 border-slate-200 rounded-xl p-4 text-lg font-bold outline-none focus:border-orange-500" placeholder="Area" required value={formData.area} onChange={e => setFormData({...formData, area: e.target.value})} />
-              </div>
-              <input className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-4 text-lg font-bold outline-none focus:border-orange-500" placeholder="Detailed Address" required value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} />
-            </section>
-
-            <button type="submit" disabled={loading} className={`w-full py-6 rounded-2xl text-xl font-black uppercase tracking-widest transition-all ${loading ? 'bg-slate-300' : 'bg-[#0F172A] text-white hover:bg-indigo-600 active:scale-95 shadow-2xl shadow-indigo-200'}`}>
-              {loading ? 'PUBLISHING...' : 'CONFIRM & LIST ITEM'}
-            </button>
+      {/* PAGE HEADER */}
+      <header className="relative overflow-hidden bg-slate-900">
+        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
+        <div className="pointer-events-none absolute -bottom-32 left-1/3 h-72 w-72 rounded-full bg-sky-500/10 blur-3xl"></div>
+        <div className="relative z-10 mx-auto max-w-4xl px-6 pb-28 pt-12">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="mb-5 inline-flex items-center gap-2 rounded-lg text-sm font-medium text-slate-300 transition hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fillRule="evenodd" d="M12.7 4.3a1 1 0 010 1.4L8.4 10l4.3 4.3a1 1 0 01-1.4 1.4l-5-5a1 1 0 010-1.4l5-5a1 1 0 011.4 0z" clipRule="evenodd" />
+            </svg>
+            Go back
+          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Add a new listing</h1>
+            <span className="rounded-full border border-indigo-400/30 bg-indigo-500/15 px-3 py-1 text-sm font-medium text-indigo-200">
+              {categoryNameFromUrl}
+            </span>
           </div>
-        </form>
-      </div>
+          <p className="mt-2 max-w-xl text-base text-slate-400">
+            Add photos, set your price and publish your item for renters to find.
+          </p>
+        </div>
+      </header>
+
+      <form onSubmit={handleSubmit} className="relative z-20 mx-auto -mt-16 max-w-4xl space-y-6 px-6">
+
+        {/* PHOTOS */}
+        <Section title="Photos" subtitle="Add up to 3 clear photos. The first one is used as the cover image.">
+          <div className="flex flex-wrap gap-4">
+            {imagePreviews.map((src, index) => (
+              <div
+                key={index}
+                className="relative h-36 w-36 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm"
+              >
+                <img src={src} alt="preview" className="h-full w-full object-cover" />
+                {index === 0 && (
+                  <span className="absolute bottom-2 left-2 rounded-md bg-slate-900/75 px-2 py-0.5 text-[11px] font-medium text-white">
+                    Cover
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  aria-label="Remove photo"
+                  className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-slate-900/70 text-white backdrop-blur-sm transition hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                >
+                  <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path d="M5.3 5.3a1 1 0 011.4 0L10 8.6l3.3-3.3a1 1 0 111.4 1.4L11.4 10l3.3 3.3a1 1 0 01-1.4 1.4L10 11.4l-3.3 3.3a1 1 0 01-1.4-1.4L8.6 10 5.3 6.7a1 1 0 010-1.4z" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+
+            {images.length < 3 && (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current.click()}
+                className="group flex h-36 w-36 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 text-slate-500 transition hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100"
+              >
+                <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                <span className="text-sm font-medium">Add photo</span>
+              </button>
+            )}
+          </div>
+          <p className="mt-4 text-xs text-slate-500">{images.length} of 3 photos added</p>
+          <input type="file" hidden ref={fileInputRef} multiple accept="image/*" onChange={handleFileSelect} />
+        </Section>
+
+        {/* DETAILS */}
+        <Section title="Item details" subtitle="Tell renters what they are getting.">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <Field label="Listing title" className="md:col-span-2">
+              <input
+                className={inputBase}
+                placeholder="e.g. Canon EOS 90D camera kit"
+                required
+                value={formData.title}
+                onChange={e => setFormData({...formData, title: e.target.value})}
+              />
+            </Field>
+
+            <Field label="Condition">
+              <select
+                className={inputBase}
+                value={formData.itemCondition}
+                onChange={e => setFormData({...formData, itemCondition: e.target.value})}
+              >
+                <option value="NEW">Brand new</option>
+                <option value="EXCELLENT">Excellent</option>
+                <option value="GOOD">Good</option>
+              </select>
+            </Field>
+
+            <Field label="Security deposit" hint="Refundable amount collected before handover.">
+              <div className="relative">
+                <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center font-semibold text-slate-400">₹</span>
+                <input
+                  type="number"
+                  className={`${inputBase} pl-9`}
+                  placeholder="0"
+                  required
+                  value={formData.securityDeposit}
+                  onChange={e => setFormData({...formData, securityDeposit: e.target.value})}
+                />
+              </div>
+            </Field>
+
+            <Field label="Description" className="md:col-span-2" hint="Mention specs, what’s included and any usage rules.">
+              <textarea
+                className={`${inputBase} h-32 resize-y`}
+                placeholder="Describe your item in detail"
+                required
+                value={formData.description}
+                onChange={e => setFormData({...formData, description: e.target.value})}
+              />
+            </Field>
+          </div>
+        </Section>
+
+        {/* PRICING */}
+        <Section title="Rental price" subtitle="Choose how often renters are charged.">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <Field label="Price">
+              <div className="relative">
+                <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-lg font-semibold text-slate-400">₹</span>
+                <input
+                  type="number"
+                  className={`${inputBase} pl-9 text-lg font-semibold`}
+                  placeholder="0.00"
+                  required
+                  value={priceInput}
+                  onChange={e => setPriceInput(e.target.value)}
+                />
+              </div>
+            </Field>
+
+            <Field label="Billing cycle">
+              <div className="grid grid-cols-3 gap-1 rounded-xl bg-slate-100 p-1" role="radiogroup" aria-label="Billing cycle">
+                {['DAILY', 'WEEKLY', 'MONTHLY'].map((type) => {
+                  const active = selectedDuration === type;
+                  return (
+                    <button
+                      key={type}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      onClick={() => setSelectedDuration(type)}
+                      className={`rounded-lg px-2 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-100 ${
+                        active
+                          ? 'bg-white text-indigo-600 shadow-sm'
+                          : 'text-slate-500 hover:text-slate-800'
+                      }`}
+                    >
+                      {DURATION_LABELS[type]}
+                    </button>
+                  );
+                })}
+              </div>
+            </Field>
+          </div>
+        </Section>
+
+        {/* LOCATION */}
+        <Section title="Pickup location" subtitle="Where renters will collect the item.">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <Field label="City">
+              <input
+                className={inputBase}
+                placeholder="e.g. Pune"
+                required
+                value={formData.city}
+                onChange={e => setFormData({...formData, city: e.target.value})}
+              />
+            </Field>
+            <Field label="Area">
+              <input
+                className={inputBase}
+                placeholder="e.g. Kothrud"
+                required
+                value={formData.area}
+                onChange={e => setFormData({...formData, area: e.target.value})}
+              />
+            </Field>
+            <Field label="Pickup address" className="md:col-span-2">
+              <input
+                className={inputBase}
+                placeholder="Street, landmark and pin code"
+                required
+                value={formData.address}
+                onChange={e => setFormData({...formData, address: e.target.value})}
+              />
+            </Field>
+          </div>
+        </Section>
+
+        {/* ACTION BAR */}
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/90 backdrop-blur">
+          <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-6 py-4">
+            <p className="hidden text-sm text-slate-500 sm:block">Your listing goes live as soon as you publish.</p>
+            <div className="ml-auto flex w-full gap-3 sm:w-auto">
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="flex-1 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-200 sm:flex-none"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-8 py-3 text-sm font-semibold shadow-sm transition focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-200 sm:flex-none ${
+                  loading
+                    ? 'cursor-not-allowed bg-slate-300 text-white'
+                    : 'bg-indigo-600 text-white hover:bg-indigo-700 active:scale-[0.98]'
+                }`}
+              >
+                {loading && (
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white"></span>
+                )}
+                {loading ? 'Publishing…' : 'Publish listing'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
   );
 };
